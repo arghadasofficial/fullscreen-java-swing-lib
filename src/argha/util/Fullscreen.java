@@ -17,63 +17,114 @@
 package argha.util;
 
 import java.awt.Frame;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 
-public class Fullscreen {
-    
+public class Fullscreen implements KeyListener {
+
     private JFrame frame;
-    private boolean bool;
+    private boolean isdecorated;
     private Screen screen;
     private Utils util;
-    
-    public Fullscreen(JFrame frame, boolean bool) {
-        screen = new Screen();
+    private boolean isFullscreen = false;
+    private Toolbar toolbar;
+
+    public Fullscreen(JFrame frame, boolean isdecorated) {
         this.frame = frame;
-        this.bool = bool;
+        this.isdecorated = isdecorated;
+        screen = new Screen();
+        toolbar = new Toolbar();
         util = new Utils(frame);
         screen.measureScreen();
+        launchSize();
+        keyDetector();
     }
-    
+
     public void DoTheWorkFor() {
-        frame.dispose();
+        util.disposeFrame();
         frame.setSize(screen.getWidth(), screen.getHeight());
-        frame.setUndecorated(bool);
-        if (bool == false) {
+        frame.setUndecorated(isdecorated);
+        if (isdecorated == false) {
             maximize();
+            isFullscreen = true;
         }
     }
-    
+
+    public void enableToolbar() {
+
+    }
+
+    private void keyDetector() {
+        frame.addKeyListener(this);
+    }
+
+    private void launchSize() {
+        frame.setSize(500, 500);
+    }
+
+    public void centered() {
+        frame.setLocationRelativeTo(null);
+    }
+
     public void maximize() {
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);
     }
-    
+
     public void maxmizeHortz() {
         frame.setExtendedState(Frame.MAXIMIZED_HORIZ);
     }
-    
+
     public void maxmizeVert() {
         frame.setExtendedState(Frame.MAXIMIZED_VERT);
     }
-    
+
     public void minimize() {
         frame.setState(Frame.ICONIFIED);
     }
-    
+
+    public void enableDecoration() {
+        util.disposeFrame();
+        isdecorated = false;
+        DoTheWorkFor();
+        util.enableFrame();
+    }
+
+    public void disableDecoration() {
+        util.disposeFrame();
+        isdecorated = true;
+        DoTheWorkFor();
+        util.enableFrame();
+    }
+
     public void terminate() {
         System.exit(0);
     }
-    
-    public void enableDecoration() {
-        util.disposeFrame();
-        bool = false;
-        DoTheWorkFor();
-        util.enableFrame();
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
     }
-    
-    public void disableDecoration() {
-        util.disposeFrame();
-        bool = true;
-        DoTheWorkFor();
-        util.enableFrame();
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        fullscreenToggle(e);
+    }
+
+    private void fullscreenToggle(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_F11) {
+            if (isFullscreen) {
+                enableDecoration();
+                isFullscreen = false;
+            } else if (!isFullscreen) {
+                disableDecoration();
+                isFullscreen = true;
+            }
+        }
     }
 }
