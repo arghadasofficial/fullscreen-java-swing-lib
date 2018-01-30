@@ -23,24 +23,38 @@ import javax.swing.JFrame;
 
 public class Fullscreen implements KeyListener {
 
+    //Variables
     private JFrame frame;
     private boolean isdecorated;
     private Screen screen;
     private Utils util;
     private boolean isFullscreen = false;
-    private Toolbar toolbar;
 
+    /**
+     *
+     * The constructor takes to parameter one for the JFrame to be initialising
+     * and the decoration enabling/disabling.
+     *
+     * @param frame pass the JFrame here
+     *
+     * @param isdecorated set it to false if you don't want the JFrame to be
+     * undecorated, or true if you want it to be undecorated.
+     */
     public Fullscreen(JFrame frame, boolean isdecorated) {
         this.frame = frame;
         this.isdecorated = isdecorated;
         screen = new Screen();
-        toolbar = new Toolbar();
         util = new Utils(frame);
         screen.measureScreen();
         launchSize();
         keyDetector();
     }
 
+    /**
+     * This is the Automatic fullscreen enabler method, Call it and it will
+     * first check Decorated (true/false), and then it makes the JFrame's window
+     * to Fullscreen view.
+     */
     public void DoTheWorkFor() {
         util.disposeFrame();
         frame.setSize(screen.getWidth(), screen.getHeight());
@@ -49,10 +63,6 @@ public class Fullscreen implements KeyListener {
             maximize();
             isFullscreen = true;
         }
-    }
-
-    public void enableToolbar() {
-
     }
 
     private void keyDetector() {
